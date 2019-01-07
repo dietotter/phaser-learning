@@ -13,6 +13,8 @@ module.exports = {
         filename: 'project.bundle.js'
     },
 
+    mode: 'development',
+
     module: {
         rules: [
             {
