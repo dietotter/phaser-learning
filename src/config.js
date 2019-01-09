@@ -7,5 +7,8 @@ export default {
     height: 600,
     scene: [
         LoadScene, MenuScene
-    ]
+    ],
+    render: {
+        pixelArt: true // so that Phaser doesn't sharpen it
+    }
 }
