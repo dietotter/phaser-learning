@@ -1,0 +1,6 @@
+1. Read Webpack docs:
+    a) about concepts (https://webpack.js.org/concepts/)
+    b) getting started (https://webpack.js.org/guides/getting-started/)
+    c) working with typescript (https://webpack.js.org/guides/typescript/)
+2. (?) Read about Babel (https://babeljs.io/docs/en/usage)
+3. Start refactoring to TS (https://www.youtube.com/watch?v=qo3sdPt4III&t=1s)
