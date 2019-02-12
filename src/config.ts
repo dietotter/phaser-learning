@@ -1,4 +1,4 @@
-import Scenes from './scenes'
+import Scenes from './scenes/index'
 
 const { LoadScene, MenuScene } = Scenes
 

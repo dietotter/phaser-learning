@@ -41,7 +41,7 @@ class LoadScene extends Phaser.Scene {
     }
 
     create() {
-        this.scene.start(SCENES.MENU, 'hi from load scene')
+        this.scene.start(SCENES.MENU, {msg: 'hi from load scene'})
     }
 }
 

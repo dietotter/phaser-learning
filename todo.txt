@@ -4,3 +4,8 @@
     c) working with typescript (https://webpack.js.org/guides/typescript/)
 2. (?) Read about Babel (https://babeljs.io/docs/en/usage)
 3. Start refactoring to TS (https://www.youtube.com/watch?v=qo3sdPt4III&t=1s)
+
+
+ DONE 1. Add babel
+DONE 2. Refactor files to TS
+DONE 3. Change src refs in index.html to 'vendor.js' and 'project.bundle.js' (or smth like that)

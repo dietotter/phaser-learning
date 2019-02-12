@@ -5,8 +5,8 @@ class MenuScene extends Phaser.Scene {
         super({ key: SCENES.MENU })
     }
 
-    init(data) {
-        console.log(data)
+    init({msg}) {
+        console.log(msg)
         console.log("Menu scene data ^")
     }
 
