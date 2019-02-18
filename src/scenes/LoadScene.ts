@@ -1,4 +1,4 @@
-import { SCENES } from "../constants"
+import { SCENES, IMAGES, AUDIO, SPRITES } from "../constants"
 
 class LoadScene extends Phaser.Scene {
     constructor() {
@@ -10,17 +10,12 @@ class LoadScene extends Phaser.Scene {
     }
 
     preload() {
-        this.load.image('title_bg', '../../assets/images/title_bg.jpg')
-        this.load.image('options_button', '../../assets/images/options_button.png')
-        this.load.image('play_button', '../../assets/images/play_button.png')
-        this.load.image('logo', '../../assets/images/logo.png')
-
-        this.load.spritesheet('cat', '../../assets/spritesheets/cat.png', {
+        this.loadImages()
+        this.loadAudio()
+        this.loadSprites( {
             frameHeight: 32,
             frameWidth: 32
         })
-
-        this.load.audio('title_music', '../../assets/audio/shuinvy-childhood.mp3')
 
         let loadingBar = this.add.graphics({
             fillStyle: {
@@ -34,14 +29,38 @@ class LoadScene extends Phaser.Scene {
             progress - loader number progress in decimal
          */
 
-        this.load.on('progress', (percent) => {
+        this.load.on('progress', (percent: number) => {
             loadingBar.fillRect(0, this.game.renderer.height / 2, this.game.renderer.width * percent, 50)
             console.log(percent)
         })
     }
 
     create() {
-        this.scene.start(SCENES.MENU, {msg: 'hi from load scene'})
+        this.scene.start(SCENES.MENU)
+    }
+
+    loadImages () {
+        this.load.setPath('/assets/images')
+
+        for (let prop in IMAGES) {
+            this.load.image(IMAGES[prop], IMAGES[prop])
+        }
+    }
+
+    loadAudio () {
+        this.load.setPath('/assets/audio')
+
+        for (let prop in AUDIO) {
+            this.load.audio(AUDIO[prop], AUDIO[prop])
+        }
+    }
+
+    loadSprites (frameConfig?: Phaser.Loader.FileTypes.ImageFrameConfig) {
+        this.load.setPath('/assets/spritesheets')
+
+        for (let prop in SPRITES) {
+            this.load.spritesheet(SPRITES[prop], SPRITES[prop], frameConfig)
+        }
     }
 }
 

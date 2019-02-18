@@ -1,33 +1,32 @@
-import { SCENES } from "../constants"
+import { SCENES, IMAGES, AUDIO, SPRITES } from "../constants"
 
 class MenuScene extends Phaser.Scene {
     constructor() {
         super({ key: SCENES.MENU })
     }
 
-    init({msg}) {
-        console.log(msg)
-        console.log("Menu scene data ^")
+    init() {
+
     }
 
     create() {
 
         // create images (z order)
 
-        this.add.image(this.game.renderer.width / 2, this.game.renderer.height * 0.2, 'logo').setDepth(1)
-        this.add.image(0, 0, 'title_bg').setOrigin(0).setDepth(0)
-        let playButton = this.add.image(this.game.renderer.width / 2, this.game.renderer.height / 2, 'play_button')
-        this.add.image(this.game.renderer.width / 2, this.game.renderer.height / 2 + 100, 'options_button')
+        this.add.image(this.game.renderer.width / 2, this.game.renderer.height * 0.2, IMAGES.LOGO).setDepth(1)
+        this.add.image(0, 0, IMAGES.TITLE).setOrigin(0).setDepth(0)
+        let playButton = this.add.image(this.game.renderer.width / 2, this.game.renderer.height / 2, IMAGES.PLAY)
+        this.add.image(this.game.renderer.width / 2, this.game.renderer.height / 2 + 100, IMAGES.OPTIONS)
 
         // create sprites
 
-        let hoverSprite = this.add.sprite(100, 100, 'cat')
+        let hoverSprite: Phaser.GameObjects.Sprite = this.add.sprite(100, 100, SPRITES.CAT)
         hoverSprite.setScale(2)
 
         // create audio, disable pauseonblur
 
         // this.sound.pauseOnBlur = false
-        this.sound.play('title_music', {
+        this.sound.play(AUDIO.TITLE, {
             loop: true
         })
 
@@ -37,7 +36,7 @@ class MenuScene extends Phaser.Scene {
             key: 'walk',
             frameRate: 8,
             repeat: -1, // repeat forever
-            frames: this.anims.generateFrameNumbers('cat', {
+            frames: this.anims.generateFrameNumbers(SPRITES.CAT, {
                 frames: [0, 1, 2, 3]
             })
         })
