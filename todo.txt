@@ -1,11 +1,1 @@
-1. Read Webpack docs:
-    a) about concepts (https://webpack.js.org/concepts/)
-    b) getting started (https://webpack.js.org/guides/getting-started/)
-    c) working with typescript (https://webpack.js.org/guides/typescript/)
-2. (?) Read about Babel (https://babeljs.io/docs/en/usage)
-3. Start refactoring to TS (https://www.youtube.com/watch?v=qo3sdPt4III&t=1s)
-
-
- DONE 1. Add babel
-DONE 2. Refactor files to TS
-DONE 3. Change src refs in index.html to 'vendor.js' and 'project.bundle.js' (or smth like that)
+1. Problem: seems like babel-polyfill is not included (but I'm not sure). Read this: https://babeljs.io/docs/en/babel-polyfill
