@@ -16,7 +16,7 @@ class MenuScene extends Phaser.Scene {
         this.add.image(this.game.renderer.width / 2, this.game.renderer.height * 0.2, IMAGES.LOGO).setDepth(1)
         this.add.image(0, 0, IMAGES.TITLE).setOrigin(0).setDepth(0)
         let playButton = this.add.image(this.game.renderer.width / 2, this.game.renderer.height / 2, IMAGES.PLAY)
-        this.add.image(this.game.renderer.width / 2, this.game.renderer.height / 2 + 100, IMAGES.OPTIONS)
+        let optionsButton = this.add.image(this.game.renderer.width / 2, this.game.renderer.height / 2 + 100, IMAGES.OPTIONS)
 
         // create sprites
 
@@ -65,7 +65,24 @@ class MenuScene extends Phaser.Scene {
         })
 
         playButton.on('pointerup', () => {
-            console.log('clicked play')
+            this.scene.start(SCENES.PLAY)
+        })
+
+        optionsButton.setInteractive()
+
+        optionsButton.on('pointerover', () => {
+            hoverSprite.setVisible(true)
+            hoverSprite.play('walk')
+            hoverSprite.x = optionsButton.x - optionsButton.width
+            hoverSprite.y = optionsButton.y
+        })
+
+        optionsButton.on('pointerout', () => {
+            hoverSprite.setVisible(false)
+        })
+
+        optionsButton.on('pointerup', () => {
+            console.log('clicked options')
         })
 
     }

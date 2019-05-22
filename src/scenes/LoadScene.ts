@@ -6,10 +6,18 @@ class LoadScene extends Phaser.Scene {
     }
 
     init() {
-
+        // instantiate plugins, receive data from other scenes here
     }
 
     preload() {
+        // load assets here
+
+        this.load.spritesheet('anna', './assets/spritesheets/anna.png', {frameHeight: 64, frameWidth: 64})
+        // load atlases
+        this.load.atlas('characters', './assets/spritesheets/characters.png', './assets/spritesheets/characters.json')
+        this.load.atlas('daze', './assets/spritesheets/daze.png', './assets/spritesheets/daze.json')
+
+        // load image, spritesheet, sound
         this.loadImages()
         this.loadAudio()
         this.loadSprites( {
@@ -35,8 +43,14 @@ class LoadScene extends Phaser.Scene {
         })
     }
 
+    // create() is the only mandatory method for scenes
     create() {
+        // make game objects here
         this.scene.start(SCENES.MENU)
+    }
+
+    update() {
+        // runs at 60fps (16ms per frame)
     }
 
     loadImages () {

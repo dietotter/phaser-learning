@@ -1,6 +1,7 @@
 export const SCENES = {
     LOAD: 'LOAD',
-    MENU: 'MENU'
+    MENU: 'MENU',
+    PLAY: 'PLAY'
 }
 
 export const IMAGES = {
