@@ -1,5 +1,4 @@
 import { SCENES } from "../constants"
-import GameObject = Phaser.GameObjects.GameObject;
 
 class PlayScene extends Phaser.Scene {
     constructor() {
