@@ -26,9 +26,9 @@ class MenuScene extends Phaser.Scene {
         // create audio, disable pauseonblur
 
         // this.sound.pauseOnBlur = false
-        this.sound.play(AUDIO.TITLE, {
-            loop: true
-        })
+        // this.sound.play(AUDIO.TITLE, {
+        //     loop: true
+        // })
 
         // create animations
 

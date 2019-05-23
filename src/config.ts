@@ -12,5 +12,11 @@ export default {
     ],
     render: {
         pixelArt: true // so that Phaser doesn't sharpen it
+    },
+    physics: {
+        default: 'arcade', // the other two are: matter, impact
+        arcade: {
+            debug: true
+        }
     }
 }

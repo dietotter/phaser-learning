@@ -1,64 +1,89 @@
 import { SCENES } from "../constants"
 
 class PlayScene extends Phaser.Scene {
+    anna!: Phaser.Physics.Arcade.Sprite
+    hooded!: Phaser.Physics.Arcade.Sprite /*w/o physics: Phaser.GameObjects.Sprite*/
+    keyboard!: {[index: string]: Phaser.Input.Keyboard.Key};
+    assassins!: Phaser.Physics.Arcade.Group;
+    fireAttacks!: Phaser.Physics.Arcade.Group;
     constructor() {
         super({ key: SCENES.PLAY })
     }
 
     preload() {
         this.anims.create({
-            key: 'dazzle',
+            key: "left",
             frameRate: 10,
-            frames: this.anims.generateFrameNames('daze', {
-                prefix: 'daze0',
-                suffix: '.png',
-                start: 0,
-                end: 41,
-                // frames: [0,1,2,3,4,5]
-            }),
-            repeat: -1
+            frames: this.anims.generateFrameNumbers("anna", {
+                start: 9,
+                end: 17
+            })
         })
-
+        this.anims.create({
+            key: "down",
+            frameRate: 10,
+            frames: this.anims.generateFrameNumbers("anna", {
+                start: 18,
+                end: 26
+            })
+        })
+        this.anims.create({
+            key: "up",
+            frameRate: 10,
+            frames: this.anims.generateFrameNumbers("anna", {
+                start: 0,
+                end: 8
+            })
+        })
+        this.anims.create({
+            key: "right",
+            frameRate: 10,
+            frames: this.anims.generateFrameNumbers("anna", {
+                start: 27,
+                end: 35
+            })
+        })
+        this.anims.create({
+            key: "blaze",
+            duration: 50,
+            frames: this.anims.generateFrameNames("daze", {
+                prefix: "fire0",
+                suffix: ".png",
+                end: 55
+            }),
+            showOnStart: true,
+            hideOnComplete: true
+        })
         // texture is an image file, optimized for better processing
         // its created automatically when you load an image into Phaser
-        this.textures.addSpriteSheetFromAtlas('hooded', {frameHeight: 64, frameWidth: 64, atlas: 'characters', frame: 'hooded'})
-        this.textures.addSpriteSheetFromAtlas('mandy', {frameHeight: 64, frameWidth: 64, atlas: 'characters', frame: 'mandy'})
+        this.textures.addSpriteSheetFromAtlas("hooded", { frameHeight: 64, frameWidth: 64, atlas: "characters", frame: "hooded" })
 
         console.log(this.textures.list)
-
-        this.anims.create({
-            key: 'right',
-            frameRate: 10,
-            frames: this.anims.generateFrameNumbers('hooded', {
-                frames: [143, 144, 145, 146, 147, 148, 149, 150, 151]
-            })
-        })
-
-        this.anims.create({
-            key: 'left',
-            frameRate: 10,
-            frames: this.anims.generateFrameNumbers('anna', {
-                frames: [143, 144, 145, 146, 147, 148, 149, 150, 151]
-            })
-        })
     }
 
     create() {
-        let pimple: Phaser.GameObjects.Sprite = this.add.sprite(100, 100, 'daze', 'daze015.png')
-        pimple.play('dazzle')
+        // add characters sprites
+        this.anna = this.physics.add.sprite(400, 400, 'anna', 26).setScale(2)
+        this.hooded = this.physics.add.sprite(200, 200, 'hooded', 26).setScale(2)
+        // add physics to existing sprite:
+        // this.physics.add.existing(sprite)
 
-        let anna: Phaser.GameObjects.Sprite = this.add.sprite(400, 400, 'anna').setScale(2)
-        let hooded: Phaser.GameObjects.Sprite = this.add.sprite(200, 200, 'hooded').setScale(2).play('right')
+        // add fire attacks group
+        this.fireAttacks = this.physics.add.group()
+
+        // add assassins group and add hooded to it
+        this.assassins = this.physics.add.group({immovable: true})
+        this.assassins.add(this.hooded)
 
         //@ts-ignore
-        window.hooded = hooded // make hooded available in the console
+        window.hooded = this.hooded // make hooded available in the console
         // e.g. from browser console:
         // > hooded.play('right')
         // > hooded.setTexture('mandy') // change texture
         // > hooded.setFrame(26) // change frame
 
         //@ts-ignore
-        window.anna = anna; window.pimple = pimple
+        window.anna = this.anna
 
         /*
             gameobject events:
@@ -66,15 +91,105 @@ class PlayScene extends Phaser.Scene {
             - animationrepeat
             - animationupdate
             - animationcomplete
-         */
 
-        pimple.on('animationupdate', () => {
-            console.log('luling')
+        e.g.:
+            anna.on('animationupdate', () => {
+                console.log('luling')
+            })
+        */
+
+        // set anna's hitbox to be smaller + set offset to position it
+        this.anna.setSize(40, 50).setOffset(10, 10)
+        // set anna to be unable to move out of the bounds of the canvas
+        this.anna.setCollideWorldBounds(true)
+
+        // add input
+        // @ts-ignore
+        this.keyboard = this.input.keyboard.addKeys('W, A, S, D')
+        this.input.on('pointermove', (pointer: Phaser.Input.Pointer) => {
+            // if player holds the mouse down, play fire animation
+            if (pointer.isDown) {
+                let fire = this.add.sprite(pointer.x, pointer.y, 'daze', 'fire00.png').play('blaze')
+
+                this.fireAttacks.add(fire)
+
+                fire.on('animationcomplete', () => {
+                    fire.destroy()
+                })
+            }
         })
 
-        pimple.on('animationrepeat', () => {
-            console.log('STARTINGOVERBITCHES')
+        // let phaser automatically handle collisions by adding collider
+        //@ts-ignore
+        this.physics.world.addCollider(this.anna, this.assassins, (anna: Phaser.Physics.Arcade.Sprite, hooded: Phaser.Physics.Arcade.Sprite) => {
+            anna.destroy()
+            hooded.destroy()
         })
+        //@ts-ignore
+        this.physics.world.addCollider(this.fireAttacks, this.assassins, (fireAttacks: Phaser.Physics.Arcade.Sprite, hooded: Phaser.Physics.Arcade.Sprite) => {
+            fireAttacks.destroy()
+            hooded.destroy()
+
+            let x = 0, y = 0
+            switch(Phaser.Math.Between(0,1)) {
+                case 0: x = Phaser.Math.Between(0, this.game.renderer.width)
+                    break
+                case 1: y = Phaser.Math.Between(0, this.game.renderer.height)
+                    break
+            }
+            // spawn 2 more assassins
+            for(let i = 0; i < 2; i++) {
+                this.assassins.add(this.physics.add.sprite(x, y, 'hooded', 26).setScale(2))
+            }
+        })
+    }
+
+    update(time: number, delta: number) { // delta 16.666 @ 60fps
+        // manually handle collisions
+        //@ts-ignore
+        // this.physics.world.collide(this.anna, this.hooded, () => {})
+
+        // all assassins will be accelerating towards anna
+        for (let i = 0; i < this.assassins.getChildren().length; i++) {
+            this.physics.accelerateToObject(this.assassins.getChildren()[i], this.anna)
+        }
+
+        // active = alive
+        if(this.anna.active) {
+            // keyboard input
+            if(this.keyboard.D.isDown) {
+                this.anna.setVelocityX(128)
+                // before physics:
+                // this.anna.x = this.anna.x + 64 * (delta / 1000)
+            }
+            if(this.keyboard.A.isDown) {
+                this.anna.setVelocityX(-128)
+            }
+            if(this.keyboard.W.isDown) {
+                this.anna.setVelocityY(-128)
+            }
+            if(this.keyboard.S.isDown) {
+                this.anna.setVelocityY(128)
+            }
+
+            if(this.keyboard.A.isUp && this.keyboard.D.isUp) { // not moving on X axis
+                this.anna.setVelocityX(0)
+            }
+            if(this.keyboard.W.isUp && this.keyboard.S.isUp) { // not moving on Y axis
+                this.anna.setVelocityY(0)
+            }
+
+            // play animations depending on velocity
+            if (this.anna.body.velocity.x > 0) { // moving right
+                this.anna.play('right', true)
+            } else if (this.anna.body.velocity.x < 0) { // moving left
+                this.anna.anims.playReverse('left', true)
+            } else if (this.anna.body.velocity.y < 0) { // moving up
+                this.anna.play('up', true)
+            } else if (this.anna.body.velocity.y > 0) { // moving down
+                this.anna.play('down', true)
+            }
+        }
     }
 }
 
