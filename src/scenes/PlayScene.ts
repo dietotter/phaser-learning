@@ -1,4 +1,6 @@
-import { SCENES } from "../constants"
+import { SCENES, SPRITES } from "../constants"
+import Sprite from "../Sprite";
+import CharacterSprite from "../CharacterSprite";
 
 class PlayScene extends Phaser.Scene {
     anna!: Phaser.Physics.Arcade.Sprite
@@ -62,8 +64,9 @@ class PlayScene extends Phaser.Scene {
     }
 
     create() {
+        let cat = new Sprite(this, 100, 100, SPRITES.CAT)
         // add characters sprites
-        this.anna = this.physics.add.sprite(400, 400, 'anna', 26).setScale(2)
+        this.anna = new CharacterSprite(this, 400, 400, 'anna', 26)
         this.hooded = this.physics.add.sprite(200, 200, 'hooded', 26).setScale(2)
         // add physics to existing sprite:
         // this.physics.add.existing(sprite)
@@ -121,8 +124,11 @@ class PlayScene extends Phaser.Scene {
 
         // let phaser automatically handle collisions by adding collider
         //@ts-ignore
-        this.physics.world.addCollider(this.anna, this.assassins, (anna: Phaser.Physics.Arcade.Sprite, hooded: Phaser.Physics.Arcade.Sprite) => {
-            anna.destroy()
+        this.physics.world.addCollider(this.anna, this.assassins, (anna: CharacterSprite, hooded: Phaser.Physics.Arcade.Sprite) => {
+            anna.hp--
+            if (anna.hp <= 0) {
+                anna.destroy()
+            }
             hooded.destroy()
         })
         //@ts-ignore
