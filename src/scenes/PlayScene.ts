@@ -60,6 +60,11 @@ class PlayScene extends Phaser.Scene {
         // its created automatically when you load an image into Phaser
         this.textures.addSpriteSheetFromAtlas("hooded", { frameHeight: 64, frameWidth: 64, atlas: "characters", frame: "hooded" })
 
+        this.load.image('terrain', './assets/images/terrain_atlas.png')
+        this.load.image('items', './assets/images/items.png')
+
+        this.load.tilemapTiledJSON('mappy', './assets/maps/untitled.json')
+
         console.log(this.textures.list)
     }
 
@@ -112,7 +117,7 @@ class PlayScene extends Phaser.Scene {
         this.input.on('pointermove', (pointer: Phaser.Input.Pointer) => {
             // if player holds the mouse down, play fire animation
             if (pointer.isDown) {
-                let fire = this.add.sprite(pointer.x, pointer.y, 'daze', 'fire00.png').play('blaze')
+                let fire = this.add.sprite(pointer.worldX, pointer.worldY, 'daze', 'fire00.png').play('blaze')
 
                 this.fireAttacks.add(fire)
 
@@ -147,6 +152,71 @@ class PlayScene extends Phaser.Scene {
             for(let i = 0; i < 2; i++) {
                 this.assassins.add(this.physics.add.sprite(x, y, 'hooded', 26).setScale(2))
             }
+        })
+
+        let mappy = this.add.tilemap('mappy')
+
+        let terrain = mappy.addTilesetImage('terrain_atlas', 'terrain')
+        let itemset = mappy.addTilesetImage('items')
+
+        // layers
+        let botLayer = mappy.createStaticLayer('bot', [terrain], 0, 0).setDepth(-1)
+        let topLayer = mappy.createStaticLayer('top', [terrain], 0, 0)
+
+        // map collisions
+        this.physics.add.collider(this.anna, topLayer)
+
+            // by tile property
+        topLayer.setCollisionByProperty({collides: true})
+
+            // by tile index
+        topLayer.setCollision([88,89,90,120,121,122,152,153,154])
+
+        // map events
+
+            // by location
+        topLayer.setTileLocationCallback(7, 10, 3, 3, () => {
+            alert('you\'re almost standing in lava.')
+
+            // makes the callback trigger only once
+            topLayer.setTileLocationCallback(7, 10, 3, 3, null)
+        })
+
+            // by index
+        // @ts-ignore
+        topLayer.setTileIndexCallback([30, 31], () => {
+            console.log('you\'re standing on top of a tree.')
+        })
+
+        // INTERACTIVE TILES FROM OBJECT LAYER
+        // 1114 = gid of item in json
+        let items = mappy.createFromObjects('pickup', 1114, {key: SPRITES.CAT}).map((sprite: Phaser.GameObjects.Sprite) => {
+            sprite.setScale(2)
+            sprite.setInteractive()
+        })
+
+        this.input.on('gameobjectdown', (pointer: Phaser.Input.Pointer, obj: Phaser.GameObjects.Sprite) => {
+            obj.destroy()
+        })
+
+        this.input.on('pointerdown', (pointer: Phaser.Input.Pointer) => {
+            // pixel position to tile position
+            let tile = mappy.getTileAt(mappy.worldToTileX(pointer.x), mappy.worldToTileY(pointer.y))
+
+            if (tile) {
+                console.log(tile)
+            }
+        })
+
+        // make camera follow the player
+        this.cameras.main.startFollow(this.anna)
+        this.physics.world.setBounds(0, 0, mappy.widthInPixels, mappy.heightInPixels)
+
+        // draw debug render hitboxes
+        topLayer.renderDebug(this.add.graphics(), {
+            tileColor: null, // non-colliding tiles
+            collidingTileColor: new Phaser.Display.Color(243, 134, 48, 200), // colliding tiles
+            faceColor: new Phaser.Display.Color(40, 39, 37, 255) // colliding face edges
         })
     }
 
