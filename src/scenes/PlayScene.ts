@@ -8,11 +8,34 @@ class PlayScene extends Phaser.Scene {
     keyboard!: {[index: string]: Phaser.Input.Keyboard.Key};
     assassins!: Phaser.Physics.Arcade.Group;
     fireAttacks!: Phaser.Physics.Arcade.Group;
+    player!: Phaser.GameObjects.Container;
     constructor() {
         super({ key: SCENES.PLAY })
     }
 
     preload() {
+        this.textures.addSpriteSheetFromAtlas("mandy", { frameHeight: 64, frameWidth: 64, atlas: "characters", frame: "mandy" })
+
+        this.anims.create({
+            key: 'mandyswordleft',
+            frameRate: 5,
+            frames: this.anims.generateFrameNumbers('mandy', {
+                start: 169,
+                end: 174
+            })
+        })
+
+        this.anims.create({
+            key: 'sword_left',
+            frameRate: 5,
+            frames: this.anims.generateFrameNumbers('rapier', {
+                start: 6,
+                end: 11
+            }),
+            showOnStart: true,
+            hideOnComplete: true
+        })
+
         this.anims.create({
             key: "left",
             frameRate: 10,
@@ -69,6 +92,18 @@ class PlayScene extends Phaser.Scene {
     }
 
     create() {
+        // creating container for layering a sprite on top of a sprite
+        this.player = this.add.container(200, 200, [
+            this.add.sprite(0, 0, 'mandy', 26),
+            this.add.sprite(0, 0, 'rapier').setVisible(false)
+        ]).setDepth(1).setScale(2)
+
+        this.input.keyboard.on('keydown-F', () => {
+            (this.player.list[0] as Phaser.GameObjects.Sprite).play('mandyswordleft')
+            // @ts-ignore
+            this.player.list[1].play('sword_left')
+        })
+
         let cat = new Sprite(this, 100, 100, SPRITES.CAT)
         // add characters sprites
         this.anna = new CharacterSprite(this, 400, 400, 'anna', 26)
@@ -213,11 +248,11 @@ class PlayScene extends Phaser.Scene {
         this.physics.world.setBounds(0, 0, mappy.widthInPixels, mappy.heightInPixels)
 
         // draw debug render hitboxes
-        topLayer.renderDebug(this.add.graphics(), {
-            tileColor: null, // non-colliding tiles
-            collidingTileColor: new Phaser.Display.Color(243, 134, 48, 200), // colliding tiles
-            faceColor: new Phaser.Display.Color(40, 39, 37, 255) // colliding face edges
-        })
+        // topLayer.renderDebug(this.add.graphics(), {
+        //     tileColor: null, // non-colliding tiles
+        //     collidingTileColor: new Phaser.Display.Color(243, 134, 48, 200), // colliding tiles
+        //     faceColor: new Phaser.Display.Color(40, 39, 37, 255) // colliding face edges
+        // })
     }
 
     update(time: number, delta: number) { // delta 16.666 @ 60fps

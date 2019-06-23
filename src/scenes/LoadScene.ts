@@ -16,6 +16,7 @@ class LoadScene extends Phaser.Scene {
         // load atlases
         this.load.atlas('characters', './assets/spritesheets/characters.png', './assets/spritesheets/characters.json')
         this.load.atlas('daze', './assets/spritesheets/daze.png', './assets/spritesheets/daze.json')
+        this.load.spritesheet('rapier', './assets/spritesheets/WEAPON_rapier.png', {frameWidth: 192, frameHeight: 192})
 
         // load image, spritesheet, sound
         this.loadImages()
@@ -69,7 +70,7 @@ class LoadScene extends Phaser.Scene {
         }
     }
 
-    loadSprites (frameConfig?: Phaser.Loader.FileTypes.ImageFrameConfig) {
+    loadSprites (frameConfig?: Phaser.Types.Loader.FileTypes.ImageFrameConfig) {
         this.load.setPath('/assets/spritesheets')
 
         for (let prop in SPRITES) {
