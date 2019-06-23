@@ -1,11 +1,16 @@
-# Node modules
-node_modules/
+# Blacklist files/folders in same directory as the .gitignore file
+/*
 
-# Webstorm
-.idea/
+# Whitelist some files
+!.gitignore
+!index.html
 
-# Built project
-build/
+# Ignore all files named .DS_Store or ending with .log
+**/.DS_Store
+**.log
 
-# MacOS
-.DS_Store
+# Whitelist folder/a/b1/ and folder/a/b2/
+# trailing "/" is optional for folders, may match file though.
+# "/" is NOT optional when followed by a *
+!build/
+!assets/
