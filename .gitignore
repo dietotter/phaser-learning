@@ -4,6 +4,10 @@
 # Whitelist some files
 !.gitignore
 !index.html
+!project.bundle.js
+!project.bundle.js.map
+!vendor.bundle.js
+!vendor.bundle.js.map
 
 # Ignore all files named .DS_Store or ending with .log
 **/.DS_Store
